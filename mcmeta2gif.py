@@ -98,7 +98,7 @@ try:
 
         out_img = frames[0]
         out_img.save(
-            sys.argv[1] + '.gif', 
+            os.path.splitext(sys.argv[1])[0] + '.gif', 
             save_all=True, 
             append_images=frames[1:], 
             duration=duration,
