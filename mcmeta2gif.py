@@ -61,6 +61,9 @@ def set_transparency(frame):
     frame.putpalette(palette[-3:] + palette[:-3])
     return frame
 
+def mult_frame_settings(settings):
+    return 1 if (settings is None or settings['index'] != index) else settings['time']
+
 
 if len(sys.argv) != 2:
     exit("Usage: {} path/to/sprite.png".format(sys.argv[0]))
@@ -93,11 +96,11 @@ try:
                     frame = set_transparency(frame)
 
                     frames.append(frame)
-                    duration.append(TIME_UNIT if (frame_settings is None or frame_settings['index'] != index) else TIME_UNIT*frame_settings['time'])
+                    duration.append(TIME_UNIT * mult_frame_settings(frame_settings))
             else:
                 frame = set_transparency(sprite_frames[frame_num])
                 frames.append(frame)
-                duration.append(TIME_UNIT*frametime)
+                duration.append(TIME_UNIT * frametime * mult_frame_settings(frame_settings))
 
         out_img = frames[0]
         out_img.save(
