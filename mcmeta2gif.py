@@ -50,10 +50,13 @@ def sprite2frames(filename):
     except FileNotFoundError:
         exit("{} not found".format(filename))
 
-def set_transparency(frame): # move the transparency index from 255 to 0 (required by PIL)
-    frame = frame.convert('P', palette=Image.ADAPTIVE)
+def set_transparency(frame):
+    alpha = frame.split()[3]
+    frame = frame.convert('P', palette=Image.ADAPTIVE, colors=255)
+    mask = Image.eval(alpha, lambda a: 255 if a <= 128 else 0) # make a mask from the alpha, with a cutoff at 128
+    frame.paste(255, mask) # set the mask at index 255
     palette = frame.getpalette()
-    frame = (np.array(frame) + 1) % 256 # put the transparent index at 0 and shift all the others
+    frame = (np.array(frame) + 1) % 256 # put the transparent index at 0 and shift all the others ("required" by PIL)
     frame = Image.fromarray(frame).convert('P')
     frame.putpalette(palette[-3:] + palette[:-3])
     return frame
@@ -79,7 +82,7 @@ try:
         duration = []
 
         for frame_num, next_frame_num, index in zip(frame_order, frame_order[1:] + frame_order[0:], range(0, len(frame_order))):
-            if interpolate:
+            if interpolate and frame_num != next_frame_num:
                 for i in range(0, frametime):
                     frame = Image.blend(
                         sprite_frames[frame_num], 
