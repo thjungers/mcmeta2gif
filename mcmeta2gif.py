@@ -45,7 +45,7 @@ def sprite2frames(filename):
             frame = sprite.crop((0, width*i, width, width*(i+1)))
             frame = frame.resize((TARGET_SIZE, TARGET_SIZE), Image.NEAREST)
             frames.append(frame)
-        return frames
+        return frames, num_frames
 
     except FileNotFoundError:
         exit("{} not found".format(filename))
@@ -70,17 +70,17 @@ if len(sys.argv) != 2:
 
 try:
     with open(sys.argv[1] + '.mcmeta', 'r') as mcmeta_file:
+        sprite_frames, num_frames = sprite2frames(sys.argv[1])
+
         mcmeta = json.load(mcmeta_file)
-        interpolate = mcmeta['animation']['interpolate']
-        frametime = mcmeta['animation']['frametime'] # number of time units per frame
-        frame_order = mcmeta['animation']['frames']
+        interpolate = mcmeta['animation'].get('interpolate', False)
+        frametime = mcmeta['animation'].get('frametime', 1) # number of time units per frame
+        frame_order = mcmeta['animation'].get('frames', list(range(0, num_frames)))
         frame_settings = None
         for i in range(0, len(frame_order)):
             if type(frame_order[i]) is dict:
                 frame_settings = frame_order.pop(i)
         
-        sprite_frames = sprite2frames(sys.argv[1])
-
         frames = []
         duration = []
 
