@@ -27,7 +27,6 @@ SOFTWARE.
 import json
 import sys, os
 from PIL import Image
-from pprint import pprint
 import numpy as np
 
 TARGET_SIZE = 32
