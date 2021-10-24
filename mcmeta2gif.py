@@ -82,7 +82,7 @@ try:
         for i in range(0, len(frame_order)):
             if type(frame_order[i]) is dict:
                 frame_settings = frame_order.pop(i)
-        
+
         frames = []
         duration = []
 
@@ -90,7 +90,7 @@ try:
             if interpolate and frame_num != next_frame_num:
                 for i in range(0, frametime):
                     frame = Image.blend(
-                        sprite_frames[frame_num], 
+                        sprite_frames[frame_num],
                         sprite_frames[next_frame_num],
                         alpha=i/frametime
                     )
@@ -104,11 +104,11 @@ try:
 
         out_img = frames[0]
         out_img.save(
-            os.path.splitext(sys.argv[1])[0] + '.gif', 
-            save_all=True, 
-            append_images=frames[1:], 
+            os.path.splitext(sys.argv[1])[0] + '.gif',
+            save_all=True,
+            append_images=frames[1:],
             duration=duration,
-            loop=0, 
+            loop=0,
             transparency=0,
             disposal=2
         )
