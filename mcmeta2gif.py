@@ -71,6 +71,12 @@ if len(sys.argv) != 2:
     exit("Usage: {} path/to/sprite.png".format(sys.argv[0]))
 
 try:
+    # open() considers paths relative to the cwd (console), but PIL considers
+    # paths relative to the script. chdir to the script path to prevent a
+    # mismatch if the script is run from another folder.
+    script_path = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_path)
+
     with open(sys.argv[1] + '.mcmeta', 'r') as mcmeta_file:
         sprite_frames, num_frames = sprite2frames(sys.argv[1])
 
